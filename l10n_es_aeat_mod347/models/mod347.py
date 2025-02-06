@@ -600,7 +600,6 @@ class L10nEsAeatMod347PartnerRecord(models.Model):
         self.write({"state": "confirmed"})
 
     def action_send(self):
-        self.write({"state": "sent"})
         self.ensure_one()
         template = self.env.ref("l10n_es_aeat_mod347.email_template_347")
         compose_form = self.env.ref("mail.email_compose_message_wizard_form")
