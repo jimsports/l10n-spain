@@ -198,16 +198,24 @@ class L10nEsAeatMod303Report(models.Model):
         count = len(extra_lines)
         step = 1.0 / (10**prec)
         if diff < 0:
-            step = -step
+             step = -step
+        # Safety counter to avoid infinite loops if no line can absorb the diff
+        max_iterations = count * int(round(abs(diff) / abs(step))) + count
+        iterations = 0
         while abs(diff) > 0:
+            if iterations >= max_iterations:
+                break
             # We need to add some in order to get prorrate
             line = extra_lines[n]
             next_value = round(line[column] + step, prec)
-            if line[column] and next_value:
-                line[column] = next_value
-                diff = round(diff - step, prec)
+            # Only skip if next_value would flip the sign of the column
+            # (avoid turning a debit into a credit or vice versa)
+            if next_value >= 0:
+                 line[column] = next_value
+                 diff = round(diff - step, prec)
             n = (n + 1) % count
-        return extra_lines
+            iterations += 1
+         return extra_lines
 
     def _prepare_regularization_extra_move_lines(self):
         lines = super()._prepare_regularization_extra_move_lines()
