@@ -215,7 +215,7 @@ class L10nEsAeatMod303Report(models.Model):
                  diff = round(diff - step, prec)
             n = (n + 1) % count
             iterations += 1
-         return extra_lines
+        return extra_lines
 
     def _prepare_regularization_extra_move_lines(self):
         lines = super()._prepare_regularization_extra_move_lines()
